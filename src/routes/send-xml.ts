@@ -7,11 +7,13 @@ import fs from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
 import { BadRequest } from './_erros/bad-request';
+import { verifyJwt } from '../middlewares/JWTAuth';
 
 export async function sendXML(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     '/xml',
     {
+      onRequest: [verifyJwt],
       schema: {
         body: z.object({
           imovelId: z.number().int(),
@@ -20,7 +22,10 @@ export async function sendXML(app: FastifyInstance) {
       }
     },
     async (req, rep) => {
-      const { imovelId, value } = req.body;
+      const { imovelId, value } = req.body as {
+        imovelId: number;
+        value: string;
+      };
 
       if (!imovelId || !value) {
         throw new BadRequest('O id do imóvel e o valor são obrigatórios!');
