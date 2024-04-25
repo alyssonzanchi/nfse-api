@@ -12,6 +12,7 @@ import { getTomador } from './routes/get-tomador';
 import fastifyJwt from '@fastify/jwt';
 import { registerUser } from './routes/register-user';
 import { loginUser } from './routes/login-user';
+import { checkToken } from './routes/check-token';
 
 const app = fastify();
 
@@ -31,6 +32,7 @@ app.register(createImovel);
 app.register(sendXML);
 app.register(getImovel);
 app.register(getTomador);
+app.register(checkToken);
 
 app.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
   console.log('HTTP server runing!');
