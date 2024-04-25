@@ -35,6 +35,12 @@ model Imovel {
   tomador Tomador @relation(fields: [tomadorId], references: [id])
 }
 
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
 enum Type {
   F
   J

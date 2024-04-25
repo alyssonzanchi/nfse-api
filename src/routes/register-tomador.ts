@@ -2,11 +2,14 @@ import { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma';
+import { verifyJwt } from '../middlewares/JWTAuth';
+import { Type } from '@prisma/client';
 
 export async function registerTomador(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     '/tomador',
     {
+      onRequest: [verifyJwt],
       schema: {
         body: z.object({
           type: z.enum(['F', 'J']),
@@ -30,7 +33,16 @@ export async function registerTomador(app: FastifyInstance) {
         cod_cidade,
         cep,
         email
-      } = req.body;
+      } = req.body as {
+        type: Type;
+        cpf_cnpj: string;
+        nome_razao_social: string;
+        logradouro: string;
+        bairro: string;
+        cod_cidade: number;
+        cep: string;
+        email: string;
+      };
 
       const tomador = await prisma.tomador.create({
         data: {
